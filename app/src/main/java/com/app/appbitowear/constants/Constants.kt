@@ -17,6 +17,7 @@ object Constants {
     const val PROGRESS_TIMES = "progress_times"
     const val PROGRESS_NOTE = "progress_note"
     const val LIMIT_NOTE_LENGTH = 255
+    const val DATE_FORMAT = "MMM dd"
 }
 
 object ApiRoutes {
@@ -71,6 +72,7 @@ object DailyHabits {
     const val HABIT_NOT_FOUND = "The habit doesn't exist"
     const val BAD_REQUEST = "Progress could not be updated"
     const val PROGRESS_NOT_FOUND = "The progress doesn't exist"
+    const val OFFLINE_MODE = "Offline: Only read"
 }
 
 object UserProfile {
@@ -113,6 +115,8 @@ object ErrorInterceptors {
     const val MSG_ERROR_BAD_REQUEST = "Invalid request"
     const val MSG_ERROR_NOT_FOUND = "Resource not found"
     const val MSG_ERROR_DEFAULT = "Unexpected error, please try again later"
+    const val MSG_NOT_INTERNET = "No Internet connection"
+    const val MSG_COULD_NOT_LOAD_HABITS = "The habits could not be loaded"
 }
 
 object App {
