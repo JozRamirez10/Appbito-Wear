@@ -37,6 +37,7 @@ import androidx.wear.compose.material.Icon
 import androidx.wear.compose.material3.IconButton
 import androidx.wear.compose.material3.Text
 import com.app.appbitowear.constants.App
+import com.app.appbitowear.constants.Constants
 import com.app.appbitowear.constants.DailyHabits
 import com.app.appbitowear.constants.General
 import com.app.appbitowear.constants.UserProfile
@@ -46,6 +47,8 @@ import com.app.appbitowear.presentation.components.FullScreenLoader
 import com.app.appbitowear.presentation.components.ScalingLazyColumnCustom
 import com.app.appbitowear.presentation.components.ScreenTitle
 import com.app.appbitowear.presentation.viewmodels.DailyHabitsViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun DailyHabitsScreen(
@@ -61,14 +64,15 @@ fun DailyHabitsScreen(
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_START) {
-                val hasData = viewModel.state.value.habits.isNotEmpty()
-                viewModel.loadTodayHabits(isSilentRefresh = hasData)
+                viewModel.loadTodayHabits()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    val todayFormatted = remember {
+        LocalDate.now().format(DateTimeFormatter.ofPattern(Constants.DATE_FORMAT))
     }
 
     Box(
@@ -83,12 +87,23 @@ fun DailyHabitsScreen(
             ScalingLazyColumnCustom(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
-                    top = 24.dp, bottom = 24.dp, start = 8.dp, end = 8.dp
+                    top = 32.dp, bottom = 24.dp, start = 8.dp, end = 8.dp
                 ),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 item{
-                    ScreenTitle(App.DAILY_HABITS)
+                    ScreenTitle("${App.DAILY_HABITS} - $todayFormatted")
+                }
+
+                if (!state.isNetworkAvailable) {
+                    item {
+                        Text(
+                            text = DailyHabits.OFFLINE_MODE,
+                            color = Color.Red,
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
 
                 if (state.habits.isEmpty()) {
@@ -107,6 +122,7 @@ fun DailyHabitsScreen(
                     ) { habitView ->
                         HabitItemRow(
                             habitView = habitView,
+                            isInteractive = state.isInteractive,
                             onToggleDone = viewModel::toggleHabitDone,
                             onEditProgress = onEditProgress
                         )
@@ -129,6 +145,7 @@ fun DailyHabitsScreen(
 @Composable
 private fun HabitItemRow(
     habitView: HabitView,
+    isInteractive: Boolean,
     onToggleDone: (HabitView) -> Unit,
     onEditProgress: (Int, String) -> Unit,
     modifier: Modifier = Modifier
@@ -139,10 +156,10 @@ private fun HabitItemRow(
     val hasNote = !habitView.todayProgress?.note.isNullOrEmpty()
     val habitId = habitView.habit.id
 
-    val handleToggle = remember(habitId, onToggleDone) {
+    val handleToggle = remember(habitView, onToggleDone) {
         { onToggleDone(habitView) }
     }
-    val handleEdit = remember(habitId, habitName, onEditProgress) {
+    val handleEdit = remember(habitView, habitName, onEditProgress) {
         { onEditProgress(habitId, habitName)}
     }
 
@@ -157,6 +174,7 @@ private fun HabitItemRow(
         ) {
             IconButton(
                 onClick = handleToggle,
+                enabled = isInteractive,
                 modifier = Modifier.size(32.dp)
             ) {
                 Icon(
@@ -200,6 +218,7 @@ private fun HabitItemRow(
 
             IconButton(
                 onClick = handleEdit,
+                enabled = isInteractive,
                 modifier = Modifier.size(32.dp)
             ) {
                 Icon(
