@@ -27,7 +27,8 @@ Building for Wear OS requires careful resource management. This project focuses 
 *   **Battery Optimization:** Uses `Lifecycle.State.STARTED` for state collection, pausing UI updates when the screen sleeps or the app is minimized to conserve battery life.
 *   **Smooth Scrolling:** Optimizes `ScalingLazyColumn` with lambda memoization (`remember`) to prevent unnecessary recompositions and maintain fluid list scrolling.
 *   **Circular Screen Adjustments:** Disables default list auto-centering and applies custom paddings to maximize screen real estate without clipping text on round bezels.
-
+*   **Reactive Network Monitoring:** Avoids battery-draining network polling by leveraging a `callbackFlow` over the native `ConnectivityManager`. The app passively listens for connection changes and instantly reacts, saving extreme battery life.
+*   **Stale State Prevention & Offline Mode:** Enforces strict date-validation on the `Lifecycle.Event.ON_START` to guarantee users never interact with cached data from previous days. It dynamically renders a "Read-Only" offline mode (disabling action buttons) if the connection is lost, fully protecting the backend's data integrity.
 ---
 
 ## 📱 User Interface
