@@ -29,7 +29,8 @@ class MainActivity : ComponentActivity() {
                     habitRepository = appContainer.habitRepository,
                     habitProgressRepository = appContainer.habitProgressRepository,
                     userRepository = appContainer.userRepository,
-                    tokenManager = appContainer.tokenManager
+                    tokenManager = appContainer.tokenManager,
+                    networkMonitor = appContainer.networkMonitor
                 )
             }
         }

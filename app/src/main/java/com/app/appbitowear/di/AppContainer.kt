@@ -2,6 +2,7 @@ package com.app.appbitowear.di
 
 import android.content.Context
 import com.app.appbitowear.data.local.TokenManager
+import com.app.appbitowear.data.network.NetworkMonitor
 import com.app.appbitowear.data.network.RetrofitClient
 import com.app.appbitowear.data.network.apis.AuthApi
 import com.app.appbitowear.data.network.apis.HabitApi
@@ -15,6 +16,8 @@ import com.app.appbitowear.repository.UserRepository
 import com.app.appbitowear.utils.SessionManager
 
 class AppContainer(private val context: Context) {
+
+    val networkMonitor by lazy { NetworkMonitor(context) }
 
     val tokenManager by lazy { TokenManager(context) }
 

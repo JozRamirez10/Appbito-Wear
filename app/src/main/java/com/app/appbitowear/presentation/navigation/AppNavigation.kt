@@ -23,6 +23,7 @@ import com.app.appbitowear.constants.Login
 import com.app.appbitowear.constants.Screens
 import com.app.appbitowear.data.local.TokenManager
 import com.app.appbitowear.data.models.response.HabitProgress
+import com.app.appbitowear.data.network.NetworkMonitor
 import com.app.appbitowear.presentation.components.FullScreenLoader
 import com.app.appbitowear.presentation.components.GlobalToast
 import com.app.appbitowear.presentation.screens.DailyHabitsScreen
@@ -55,7 +56,8 @@ fun AppNavigation(
     habitRepository: HabitRepository,
     habitProgressRepository: HabitProgressRepository,
     userRepository: UserRepository,
-    tokenManager: TokenManager
+    tokenManager: TokenManager,
+    networkMonitor: NetworkMonitor
 ){
     val navController = rememberSwipeDismissableNavController()
     var startDestination by remember { mutableStateOf<String?>(null) }
@@ -98,7 +100,11 @@ fun AppNavigation(
                 composable(Screens.DAILY_HABITS) { backStackEntry ->
                     val dailyHabitsViewModel: DailyHabitsViewModel = viewModel(
                         factory = buildViewModelFactory {
-                            DailyHabitsViewModel(habitRepository, habitProgressRepository)
+                            DailyHabitsViewModel(
+                                habitRepository,
+                                habitProgressRepository,
+                                networkMonitor
+                            )
                         }
                     )
 
